@@ -3,9 +3,12 @@ var Food = (function () {
         this.scale = scale;
     }
     Food.prototype.setup = function (p5) {
-        this.x = p5.random(p5.width);
-        this.y = p5.random(p5.height);
-        p5.createVector(this.x, this.y);
+        var cols = p5.floor(p5.width / this.scale);
+        var rows = p5.floor(p5.height / this.scale);
+        var vector = p5.createVector(p5.floor(p5.random(cols)), p5.floor(p5.random(rows)));
+        vector.mult(this.scale);
+        this.x = vector.x;
+        this.y = vector.y;
     };
     Food.prototype.draw = function (p5) {
         p5.fill(255, 0, 100);
@@ -21,19 +24,21 @@ var sketch = function (p) {
     };
     p.setup = function () {
         p.createCanvas(800, 600);
-        p.frameRate(30);
+        p.frameRate(10);
         snake = new Snake(gameScale);
         food = new Food(gameScale);
         food.setup(p);
-        food.draw(p);
-    };
-    p.windowResized = function () {
-        p.resizeCanvas(800, 600);
     };
     p.draw = function () {
         p.background('#fff');
-        snake.update(p);
-        snake.show(p);
+        snake.setup(p);
+        snake.draw(p);
+        food.draw(p);
+        if (snake.eat(food, p)) {
+            console.log('eating food');
+            food.setup(p);
+            food.draw(p);
+        }
     };
     p.keyPressed = function () {
         switch (p.keyCode) {
@@ -61,19 +66,22 @@ var Snake = (function () {
         this.ySpeed = 0;
         this.scale = scale;
     }
-    Snake.prototype.update = function (p5) {
-        this.x += this.xSpeed;
-        this.y += this.ySpeed;
+    Snake.prototype.setup = function (p5) {
+        this.x += this.xSpeed * this.scale;
+        this.y += this.ySpeed * this.scale;
         this.x = p5.constrain(this.x, 0, p5.width - this.scale);
         this.y = p5.constrain(this.y, 0, p5.height - this.scale);
     };
-    Snake.prototype.show = function (p5) {
+    Snake.prototype.draw = function (p5) {
         p5.fill(255);
         p5.rect(this.x, this.y, this.scale, this.scale);
     };
     Snake.prototype.dir = function (x, y) {
         this.xSpeed = x;
         this.ySpeed = y;
+    };
+    Snake.prototype.eat = function (food, p5) {
+        return p5.dist(this.x, this.y, food.x, food.y) < 1;
     };
     return Snake;
 }());

@@ -1,9 +1,9 @@
-class Snake {
-    private x: number;
-    private y: number;
+class Snake implements P5 {
+    x: number;
+    y: number;
+    readonly scale: number;
     private xSpeed: number;
     private ySpeed: number;
-    private readonly scale: number;
 
     constructor(scale: number) {
         this.x = 0;
@@ -13,15 +13,15 @@ class Snake {
         this.scale = scale;
     }
 
-    update(p5: p5) {
-        this.x += this.xSpeed;
-        this.y += this.ySpeed;
+    setup(p5: p5) {
+        this.x += this.xSpeed * this.scale;
+        this.y += this.ySpeed * this.scale;
 
         this.x = p5.constrain(this.x, 0, p5.width - this.scale);
         this.y = p5.constrain(this.y, 0, p5.height - this.scale);
     }
 
-    show(p5: p5) {
+    draw(p5: p5) {
         p5.fill(255);
         p5.rect(this.x, this.y, this.scale, this.scale);
     }
@@ -31,7 +31,7 @@ class Snake {
         this.ySpeed = y;
     }
 
-    eat() {
-
+    eat(food: Food, p5: p5) {
+        return p5.dist(this.x, this.y, food.x, food.y) < 1;
     }
 }

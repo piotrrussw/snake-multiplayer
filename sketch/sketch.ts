@@ -9,23 +9,28 @@ const sketch = (p: p5) => {
 
     p.setup = () => {
         p.createCanvas(800, 600);
-        p.frameRate(30);
+        p.frameRate(10);
 
         snake = new Snake(gameScale);
         food = new Food(gameScale);
+        food.setup(p);
     };
 
-    p.windowResized = () => {
-        p.resizeCanvas(800, 600);
-    };
+    // p.windowResized = () => {
+    //     p.resizeCanvas(600, 600);
+    // };
 
     p.draw = () => {
         p.background('#fff');
-        snake.update(p);
-        snake.show(p);
-
-        food.setup(p);
+        snake.setup(p);
+        snake.draw(p);
         food.draw(p);
+
+        if (snake.eat(food, p)) {
+            console.log('eating food');
+            food.setup(p);
+            food.draw(p);
+        }
     };
 
     p.keyPressed = () => {
