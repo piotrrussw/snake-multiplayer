@@ -1,117 +1,79 @@
-var Morph = (function () {
-    function Morph() {
+var Food = (function () {
+    function Food(scale) {
+        this.scale = scale;
     }
-    Morph.prototype.setup = function (p) {
+    Food.prototype.setup = function (p5) {
+        this.x = p5.random(p5.width);
+        this.y = p5.random(p5.height);
+        p5.createVector(this.x, this.y);
     };
-    Morph.prototype.recalc = function (p) {
-        var totalDistance = 0;
-        var points = this.shapes[this.currentShape].points;
-        for (var i = 0; i < points.length; i++) {
-            var v1 = points[i];
-            var v2 = this.morph[i];
-            v2.lerp(v1, 0.1);
-            totalDistance += p5.Vector.dist(v1, v2);
-        }
-        if (totalDistance < 0.1) {
-            this.currentShape++;
-            if (this.currentShape >= this.shapes.length) {
-                this.currentShape = 0;
-            }
-        }
+    Food.prototype.draw = function (p5) {
+        p5.fill(255, 0, 100);
+        p5.rect(this.x, this.y, this.scale, this.scale);
     };
-    Morph.prototype.draw = function (p) {
-        this.recalc(p);
-        var color = this.shapes[this.currentShape].color;
-        var points = this.shapes[this.currentShape].points;
-        p.translate(p.width / 2, p.height / 2);
-        p.strokeWeight(4);
-        p.beginShape();
-        p.noFill();
-        p.stroke(color);
-        for (var i = 0; i < points.length; i++) {
-            var v = this.morph[i];
-            p.vertex(v.x, v.y);
-        }
-        p.endShape(p.CLOSE);
-    };
-    return Morph;
+    return Food;
 }());
-var Shapes = (function () {
-    function Shapes() {
-    }
-    Shapes.circle = function (p, size) {
-        var points = new Array();
-        for (var angle = 0; angle < 360; angle += 9) {
-            var v = p5.Vector.fromAngle(p.radians(angle - 135));
-            v.mult(size);
-            points.push(v);
-        }
-        return points;
-    };
-    Shapes.square = function (p, size) {
-        var points = new Array();
-        for (var x = -size; x < size; x += 10) {
-            points.push(p.createVector(x, -size));
-        }
-        for (var y = -size; y < size; y += 10) {
-            points.push(p.createVector(size, y));
-        }
-        for (var x = size; x > -size; x -= 10) {
-            points.push(p.createVector(x, size));
-        }
-        for (var y = size; y > -size; y -= 10) {
-            points.push(p.createVector(-size, y));
-        }
-        return points;
-    };
-    Shapes.star = function (p, x, y, radius1, radius2, npoints) {
-        var angle = p.TWO_PI / npoints;
-        var halfAngle = angle / 2.0;
-        var points = new Array();
-        for (var a = 0; a < p.TWO_PI; a += angle) {
-            var sx = x + p.cos(a) * radius2;
-            var sy = y + p.sin(a) * radius2;
-            points.push(p.createVector(sx, sy));
-            sx = x + p.cos(a + halfAngle) * radius1;
-            sy = y + p.sin(a + halfAngle) * radius1;
-            points.push(p.createVector(sx, sy));
-        }
-        return points;
-    };
-    return Shapes;
-}());
+var gameScale = 20;
 var sketch = function (p) {
     var snake;
+    var food;
     p.preload = function () {
     };
     p.setup = function () {
         p.createCanvas(800, 600);
-        snake = new Snake();
+        p.frameRate(30);
+        snake = new Snake(gameScale);
+        food = new Food(gameScale);
+        food.setup(p);
+        food.draw(p);
     };
     p.windowResized = function () {
         p.resizeCanvas(800, 600);
     };
     p.draw = function () {
         p.background('#fff');
-        snake.update();
+        snake.update(p);
         snake.show(p);
+    };
+    p.keyPressed = function () {
+        switch (p.keyCode) {
+            case 37:
+                snake.dir(-1, 0);
+                break;
+            case 38:
+                snake.dir(0, -1);
+                break;
+            case 39:
+                snake.dir(1, 0);
+                break;
+            case 40:
+                snake.dir(0, 1);
+                break;
+        }
     };
 };
 var sketchP = new p5(sketch);
 var Snake = (function () {
-    function Snake() {
+    function Snake(scale) {
         this.x = 0;
         this.y = 0;
         this.xSpeed = 1;
         this.ySpeed = 0;
+        this.scale = scale;
     }
-    Snake.prototype.update = function () {
+    Snake.prototype.update = function (p5) {
         this.x += this.xSpeed;
         this.y += this.ySpeed;
+        this.x = p5.constrain(this.x, 0, p5.width - this.scale);
+        this.y = p5.constrain(this.y, 0, p5.height - this.scale);
     };
     Snake.prototype.show = function (p5) {
         p5.fill(255);
-        p5.rect(this.x, this.y, 10, 10);
+        p5.rect(this.x, this.y, this.scale, this.scale);
+    };
+    Snake.prototype.dir = function (x, y) {
+        this.xSpeed = x;
+        this.ySpeed = y;
     };
     return Snake;
 }());
