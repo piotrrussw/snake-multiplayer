@@ -1,4 +1,4 @@
-interface P5 {
+interface P5Object {
     x: number,
     y: number,
     readonly scale: number,

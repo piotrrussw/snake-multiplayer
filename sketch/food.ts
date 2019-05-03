@@ -1,4 +1,4 @@
-class Food implements P5 {
+class Food implements P5Object {
     x: number;
     y: number;
     readonly scale: number;
@@ -10,7 +10,7 @@ class Food implements P5 {
     setup(p5: p5) {
         const cols = p5.floor(p5.width / this.scale);
         const rows = p5.floor(p5.height / this.scale);
-        let vector = p5.createVector(p5.floor(p5.random(cols)), p5.floor(p5.random(rows)))
+        let vector = p5.createVector(p5.floor(p5.random(cols)), p5.floor(p5.random(rows)));
 
         vector.mult(this.scale);
 

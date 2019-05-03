@@ -24,30 +24,17 @@ const sketch = (p: p5) => {
         p.background('#fff');
         snake.setup(p);
         snake.draw(p);
+
         food.draw(p);
 
         if (snake.eat(food, p)) {
-            console.log('eating food');
             food.setup(p);
             food.draw(p);
         }
     };
 
     p.keyPressed = () => {
-        switch (p.keyCode) {
-            case 37:
-                snake.dir(-1, 0);
-                break;
-            case 38:
-                snake.dir(0, -1);
-                break;
-            case 39:
-                snake.dir(1, 0);
-                break;
-            case 40:
-                snake.dir(0, 1);
-                break;
-        }
+        snake.move(p.keyCode);
     };
 };
 
