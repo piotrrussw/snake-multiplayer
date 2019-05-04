@@ -19,7 +19,7 @@ const sketch = (p: p5) => {
         player = new Player(gameScale);
         food = new Food(gameScale);
 
-        socket.on('message', (data: any, foodData: any) => {
+        socket.on('message', (data: any, foodData: any, highScore: number) => {
             console.log(data, foodData);
             Object.keys(data).forEach((id: string) => {
 
@@ -38,6 +38,8 @@ const sketch = (p: p5) => {
                 food.update(p, foodData);
             }
 
+            player.setScore(highScore);
+            player.mountHighScore();
         });
 
         socket.on('disconnect', (id: string) => {

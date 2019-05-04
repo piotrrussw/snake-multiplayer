@@ -22,7 +22,7 @@ let highScore: number = 0;
 
 io.sockets.on("connection", (client: any) => {
     console.log("user connected - ", client.id, clients);
-    client.send(clients, food);
+    client.send(clients, food, highScore);
     clients[client.id] = {};
 
     client.on('disconnect', () => {
