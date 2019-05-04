@@ -22,4 +22,17 @@ class Food implements P5Object {
         p5.fill('#F43706');
         p5.rect(this.x, this.y, this.scale, this.scale);
     }
+
+    update(p5: p5, data: any) {
+        this.x = data.x;
+        this.y = data.y;
+    }
+
+    getData() {
+        return {
+            x: this.x,
+            y: this.y,
+            scale: this.scale
+        }
+    }
 }

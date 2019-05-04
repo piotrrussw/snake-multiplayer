@@ -11,9 +11,24 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
     background: #38a6ff;
 }
 
 canvas {
     border: 1px solid #000;
+}
+
+#score-board {
+    display: flex;
+    justify-content: space-between;
+    min-height: 50px;
+    width: 600px;
+    color: #fff;
+    font-size: 20px;
+}
+
+#player-score, #high-score {
+    font-size: 30px;
+    margin-left: 10px;
 }

@@ -10,21 +10,34 @@ const sketch = (p: p5) => {
     };
 
     p.setup = () => {
-        p.createCanvas(800, 600);
+        const canvas = p.createCanvas(800, 500);
+        // canvas.parent('sketch');
         p.frameRate(10);
         // @ts-ignore
         socket = io('http://localhost:3000');
 
         player = new Player(gameScale);
         food = new Food(gameScale);
-        food.setup(p);
 
-        socket.on('message', (data: any) => {
+        socket.on('message', (data: any, foodData: any) => {
+            console.log(data, foodData);
             Object.keys(data).forEach((id: string) => {
-                Object.keys(data[id]).length
-                    ? opponents[id] = new Snake(data[id])
-                    : opponents[id] = new Snake(gameScale);
+
+                if (Object.keys(data[id]).length) {
+                    opponents[id] = new Snake(gameScale);
+                    opponents[id].update(data[id]);
+                } else {
+                    opponents[id] = new Snake(gameScale);
+                }
             });
+
+            if (!Object.keys(opponents).length) {
+                food.setup(p);
+                socket.emit('food', food.getData());
+            } else {
+                food.update(p, foodData);
+            }
+
         });
 
         socket.on('disconnect', (id: string) => {
@@ -36,10 +49,23 @@ const sketch = (p: p5) => {
         socket.on('newConnection', (id: string) => {
             opponents[id] = new Snake(gameScale);
         });
+
+        socket.on('move', (data: any, id: string) => {
+            console.log('on move', data);
+            opponents[id].update(data);
+        });
+
+        socket.on('food', (data: any) => {
+            return food.update(p, data);
+        });
+
+        socket.on('highScore', (score: number) => {
+            player.setScore(score);
+        });
     };
 
     p.windowResized = () => {
-        p.resizeCanvas(800, 600);
+        p.resizeCanvas(800, 500);
     };
 
     p.draw = () => {
@@ -48,7 +74,9 @@ const sketch = (p: p5) => {
         player.draw(p);
 
         Object.keys(opponents).forEach((id: string) => {
+            // noinspection TypeScriptValidateJSTypes
             opponents[id].setup(p);
+            // noinspection TypeScriptValidateJSTypes
             opponents[id].draw(p);
         });
 
@@ -57,10 +85,12 @@ const sketch = (p: p5) => {
         if (player.eat(food, p)) {
             food.setup(p);
             food.draw(p);
+
+            socket.emit('highScore', player.getScore());
+            socket.emit('food', food.getData());
         }
 
-        // console.log('Sending player data...');
-        // socket.emit('draw', player.getData());
+        socket.emit('move', player.getData());
     };
 
     p.keyPressed = () => {

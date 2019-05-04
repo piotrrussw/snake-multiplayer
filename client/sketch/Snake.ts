@@ -34,7 +34,7 @@ class Snake implements P5Object {
             this.tail.shift();
         }
 
-        this.tail[this.total - 1] = p5.createVector(this.x, this.y);
+        this.tail[this.total - 1] = {x: this.x, y: this.y};
 
         this.x += this.xSpeed * this.scale;
         this.y += this.ySpeed * this.scale;
@@ -44,11 +44,20 @@ class Snake implements P5Object {
     }
 
     draw(p5: p5) {
-        p5.fill('255');
-
+        p5.fill('#969696');
         this.tail.forEach(({x, y}) => p5.rect(x, y, this.scale, this.scale));
 
         p5.rect(this.x, this.y, this.scale, this.scale);
+    }
+
+    update(args: any) {
+        this.x = args.x;
+        this.y = args.y;
+        this.xSpeed = args.xSpeed;
+        this.ySpeed = args.ySpeed;
+        this.tail = args.tail;
+        this.total = args.total;
+        this.highScore = args.highScore;
     }
 
     private death(p5: p5) {

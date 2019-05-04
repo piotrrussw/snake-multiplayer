@@ -17,12 +17,13 @@ const server = app.listen(3000, function() {
 
 const io = socket(server);
 let clients: any = {};
+let food: any = null;
+let highScore: number = 0;
 
 io.sockets.on("connection", (client: any) => {
-    console.log("user connected - ", client.id);
+    console.log("user connected - ", client.id, clients);
+    client.send(clients, food);
     clients[client.id] = {};
-
-    client.send(clients);
 
     client.on('disconnect', () => {
         delete clients[client.id];
@@ -32,8 +33,21 @@ io.sockets.on("connection", (client: any) => {
 
     client.broadcast.emit('newConnection', client.id);
 
-    client.on('draw', (data: any) => {
+    client.on('move', (data: any) => {
         clients[client.id] = data;
-        client.broadcast.emit('draw', clients);
+
+        client.broadcast.emit('move', data, client.id);
+    });
+
+    client.on('food', (data: any) => {
+        food = data;
+        client.broadcast.emit('food', data);
+    });
+
+    client.on('highScore', (score: number) => {
+        if (score > highScore) {
+            highScore = score;
+            client.broadcast.emit('highScore', highScore);
+        }
     });
 });
