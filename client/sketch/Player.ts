@@ -1,50 +1,10 @@
-class Snake implements P5Object {
-    x: number;
-    y: number;
-    highScore: number = 0;
-    readonly scale: number;
-    private xSpeed: number;
-    private ySpeed: number;
-    private total: number = 0;
-    private tail: Array<any> = [];
-
+///<reference path="Snake.ts"/>
+class Player extends Snake {
     /**
      * @param curr - current (x, y) direction
      * @param next - next (x, y) direction
      */
     private isMovingBackward = (curr: Array<number>, next: Array<number>): boolean => curr[0] === (next[0] * -1) || curr[1] === (next[1] * -1);
-
-    constructor(scale: number) {
-        this.x = 0;
-        this.y = 0;
-        this.xSpeed = 1;
-        this.ySpeed = 0;
-        this.scale = scale;
-    }
-
-    setup(p5: p5) {
-        this.death(p5);
-
-        if (this.total === this.tail.length) {
-            this.tail.shift();
-        }
-
-        this.tail[this.total - 1] = p5.createVector(this.x, this.y);
-
-        this.x += this.xSpeed * this.scale;
-        this.y += this.ySpeed * this.scale;
-
-        this.x = p5.constrain(this.x, 0, p5.width - this.scale);
-        this.y = p5.constrain(this.y, 0, p5.height - this.scale);
-    }
-
-    draw(p5: p5) {
-        p5.fill('255');
-
-        this.tail.forEach(({x, y}) => p5.rect(x, y, this.scale, this.scale));
-
-        p5.rect(this.x, this.y, this.scale, this.scale);
-    }
 
     eat(food: Food, p5: p5) {
         if (p5.dist(this.x, this.y, food.x, food.y) < 1) {
@@ -82,10 +42,15 @@ class Snake implements P5Object {
         }
     }
 
-    private death(p5: p5) {
-        if (this.tail.some(({x, y}) => p5.dist(this.x, this.y, x, y) < 1)) {
-            this.total = 0;
-            this.tail = [];
+    getData(): any {
+        return {
+            x: this.x,
+            y: this.y,
+            xSpeed: this.xSpeed,
+            ySpeed: this.ySpeed,
+            scale: this.scale,
+            tail: this.tail,
+            total: this.total
         }
     }
 

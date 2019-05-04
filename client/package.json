@@ -3,15 +3,10 @@
   "version": "1.0.0",
   "description": "multiplayer snake project written in TypeScript based on WebSockets (socket.io)",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "concurrently \"browser-sync start --server -w\" \" tsc --watch\"",
     "dev": "tsc"
   },
   "devDependencies": {
     "@types/p5": "^0.7.1",
-    "p5": "^0.7.3",
-    "browser-sync": "^2.26.3",
-    "concurrently": "^3.6.1",
     "typescript": "^2.9.2"
   }
 }

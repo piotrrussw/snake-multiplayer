@@ -8,6 +8,5 @@
         "rootDir": "./sketch/",
         "sourceMap": true,
         "noImplicitAny": true
-//        "module": "commonjs"
     }
 }
