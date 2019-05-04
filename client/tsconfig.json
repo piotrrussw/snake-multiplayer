@@ -3,11 +3,11 @@
         "target": "es5",
         "removeComments": true,
         "preserveConstEnums": true,
-        "outFile": "./build/build.js",
+        "outFile": "../public/js/index.js",
         "sourceRoot": "./sketch/",
         "rootDir": "./sketch/",
         "sourceMap": true,
-        "noImplicitAny": true,
-        "module": "none"
+        "noImplicitAny": true
+//        "module": "commonjs"
     }
 }

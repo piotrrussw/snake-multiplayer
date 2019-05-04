@@ -1,6 +1,5 @@
-const gameScale = 20;
-console.log('GAME IS RUNNING');
 const sketch = (p: p5) => {
+    const gameScale = 20;
     let snake: Snake;
     let food: Food;
 
