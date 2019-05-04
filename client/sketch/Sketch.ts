@@ -14,7 +14,7 @@ const sketch = (p: p5) => {
         // canvas.parent('sketch');
         p.frameRate(10);
         // @ts-ignore
-        socket = io('http://localhost:3000');
+        socket = io(`http://localhost:${process.env.PORT || 3000}`);
 
         player = new Player(gameScale);
         food = new Food(gameScale);
