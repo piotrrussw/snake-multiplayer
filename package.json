@@ -27,6 +27,9 @@
     "p5.js",
     "express.js"
   ],
+  "engines": {
+    "node": "10.x"
+  },
   "author": "Piotr Wadycki",
   "license": "MIT"
 }
