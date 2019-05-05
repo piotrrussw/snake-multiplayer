@@ -221,7 +221,7 @@ var sketch = function (p) {
     p.setup = function () {
         var canvas = p.createCanvas(800, 500);
         p.frameRate(10);
-        socket = io("http://localhost:" + (process.env.PORT || 3000));
+        socket = io();
         player = new Player(gameScale);
         food = new Food(gameScale);
         socket.on('message', function (data, foodData, highScore) {

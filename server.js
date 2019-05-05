@@ -9,8 +9,8 @@ app.use("/public", express.static(path.join(__dirname + "/public")));
 app.get("/", (req, res) => {
     res.sendFile(path.resolve("public/index.html"));
 });
-const server = app.listen(3000, function () {
-    console.log("listening on *:3000");
+const server = app.listen(process.env.PORT || 3000, function () {
+    console.log(`listening on *:${process.env.PORT || 3000}`);
 });
 const io = socket(server);
 let clients = {};
@@ -18,7 +18,7 @@ let food = null;
 let highScore = 0;
 io.sockets.on("connection", (client) => {
     console.log("user connected - ", client.id, clients);
-    client.send(clients, food);
+    client.send(clients, food, highScore);
     clients[client.id] = {};
     client.on('disconnect', () => {
         delete clients[client.id];
