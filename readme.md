@@ -2,6 +2,9 @@
 
 Multiplayer implementation of a popular snake game.
 
+### Demo
+
+Play game live at: [LINK](https://damp-mesa-47351.herokuapp.com/)
 
 ### Local Usage
 
